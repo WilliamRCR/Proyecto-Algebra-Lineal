@@ -35,10 +35,9 @@ def resolver_sistema_ecuaciones():
     print("1. 2x2")
     print("2. 3x3")
     print("3. 4x4")
-    opcion = int(input("Ingrese el número de su elección: "))
+    tamaño_sistema = int(input("Ingrese el número de su elección: "))
 
     # Pedir al usuario los coeficientes de las ecuaciones
-    tamaño_sistema = opcion + 1
     matriz_coeficientes = []
     vector_resultados = []
     for i in range(tamaño_sistema):
@@ -54,27 +53,49 @@ def resolver_sistema_ecuaciones():
     matriz_coeficientes = np.array(matriz_coeficientes)
     vector_resultados = np.array(vector_resultados)
 
-    # Resolver el sistema de ecuaciones
-    try:
-        # Método de Gauss-Jordan
-        solucion_gauss = np.linalg.solve(matriz_coeficientes, vector_resultados)
+    print("Elija el método para resolver el sistema:")
+    print("1. Método de Cramer")
+    print("2. Método de Gauss-Jordan")
+    metodo = int(input("Ingrese el número de su elección: "))
 
-        # Método de Cramer
-        if tamaño_sistema == 2 or tamaño_sistema == 3:
+    # Resolver el sistema de ecuaciones
+    if metodo == 1:
+        try:
+            # Método de Cramer
             solucion_cramer = []
             for i in range(tamaño_sistema):
                 matriz_temporal = matriz_coeficientes.copy()
                 matriz_temporal[:, i] = vector_resultados
                 solucion_cramer.append(np.linalg.det(matriz_temporal) / np.linalg.det(matriz_coeficientes))
-        else:
-            solucion_cramer = None
 
-        print("\nResultados:")
-        print("Solución por Gauss-Jordan:", solucion_gauss)
-        print("Solución por Cramer:", solucion_cramer)
+            print("\nSolución por Cramer:", solucion_cramer)
 
-    except np.linalg.LinAlgError:
-        print("\nEl sistema no tiene solución única.")
+            # Verificar el tipo de solución
+            if len(set(solucion_cramer)) == 1:
+                print("El sistema tiene una solución única.")
+            else:
+                print("El sistema tiene soluciones infinitas.")
+
+        except np.linalg.LinAlgError:
+            print("\nEl sistema no tiene solución única.")
+
+    elif metodo == 2:
+        try:
+            # Método de Gauss-Jordan
+            solucion_gauss = np.linalg.solve(matriz_coeficientes, vector_resultados)
+            print("\nSolución por Gauss-Jordan:", solucion_gauss)
+
+            # Verificar el tipo de solución
+            if len(set(solucion_gauss)) == 1:
+                print("El sistema tiene una solución única.")
+            else:
+                print("El sistema tiene soluciones infinitas.")
+
+        except np.linalg.LinAlgError:
+            print("\nEl sistema no tiene solución única.")
+    else:
+        print("\nOpción inválida. Por favor, elija un método válido.")
+
 
 def multiplicar_matrices():
     # Solicitar al usuario las dimensiones de la primera matriz
